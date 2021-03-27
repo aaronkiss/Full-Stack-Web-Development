@@ -89,11 +89,25 @@ p is q
 
 # 函数、模块、包
 
-## 内建函数
+### 内建函数
 可以直接使用
-## 标准库函数
+### 标准库函数
 需要先将模块导入，然后再使用
-## 第三方库函数
+### 第三方库函数
 需要先安装相应的库，然后再导入使用
-## 用户自定义函数
+### 用户自定义函数
 由用户自己定义的函数
+
+### 模块就是可以反复调用的py文件
+例如数学模块`math`
+导入模块`import math`
+导入模块里的round函数`import math.round`
+
+### 包是由子包和其下的模块组成
+例如：
+导入cc包里dd子包的ee模块`import cc.dd.ee`或`from cc.dd import ee`
+
+
+ if signal=='red' and car=='moving':子
+ if signal=='red' and car=='moving':ba
+ if signal=='red' and car=='moving':
