@@ -106,8 +106,3 @@ p is q
 ### 包是由子包和其下的模块组成
 例如：
 导入cc包里dd子包的ee模块`import cc.dd.ee`或`from cc.dd import ee`
-
-
- if signal=='red' and car=='moving':子
- if signal=='red' and car=='moving':ba
- if signal=='red' and car=='moving':
