@@ -106,3 +106,21 @@ p is q
 ### 包是由子包和其下的模块组成
 例如：
 导入cc包里dd子包的ee模块`import cc.dd.ee`或`from cc.dd import ee`
+
+
+# if语句
+可以连续多个循环的是`elif`语句，用法如下：
+
+```python
+if a == b:
+    print(b)
+elif a == c:
+    print(c)
+elif a == d:
+    print(d)
+    ...
+else a == z:
+    print(z)
+```
+
+并且可以进行**条件嵌套**。
