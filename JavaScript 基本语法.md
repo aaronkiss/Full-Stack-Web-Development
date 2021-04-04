@@ -58,3 +58,17 @@ console.log(Number.isInteger(46.78));
 
 
 ```
+
+## if else语句
+
+```javascript
+let sale = true;
+
+sale = false;
+
+if(sale) {
+  console.log('Time to buy!');
+} else {
+  console.log('Time to wait for a sale.');
+}
+```
