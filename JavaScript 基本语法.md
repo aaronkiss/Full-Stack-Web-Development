@@ -91,3 +91,26 @@ if(sale) {
 |`&&` | 和 |
 | `｜｜`  | 或 |
 |`!` | 采用true而返回false|
+
+
+- 尽管变量值不是显性的，但是在布尔或条件上下文中使用的时候已为它分配了一个**非伪造的**值True，那么if语句中的代码块依然会运行。  
+
+哪些是**非伪造的值**呢？
+- `0`
+- 空白的字符串例如`“”`或`‘’`
+- `null`
+- `undefined`
+- `NaN`,或者“Not a Number”
+
+```javascript
+let bumberOf Apples = 0;
+
+if (numberOfApples){
+    console.log('Let us eate apples!');
+    } else {
+    console.log('No apples left!');
+    }
+    
+//输出 “No apples left!”
+```
+
