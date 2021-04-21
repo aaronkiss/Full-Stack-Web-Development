@@ -134,3 +134,37 @@ let defaultName = username || 'Stranger';
 
 ## 三元运算符(Ternary Operator)
 
+```javascript
+let isNightTime = true;
+if (isNightTime) {
+  console.log('Turn on the lights!');
+} else {
+  console.log('Turn off the lights!');
+}
+```
+
+等价于
+
+```javascript
+isNightTime ? console.log('Turn on the lights!') : console.log('Turn off the lights!');
+```
+
+另一个例子
+
+```javascript
+let favoritePhrase = 'Love That!';
+if (favoritePhrase === 'Love That!') {
+  console.log('I love that!');
+} else {
+  console.log('I don't love that!');
+}
+```
+
+等价于
+
+```javascript
+let favoritePhrase = 'Love That!';
+
+favoritePhrase === 'Love That!' ? console.log('I love that!') : console.log('I don't love that!');
+```
+
