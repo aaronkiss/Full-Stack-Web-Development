@@ -117,9 +117,9 @@ if (numberOfApples){
 ## 短路评估(Short Circuit Evaluation)
 使用短小的代码表达选择逻辑。
 
-```javascript{.line-numbers}
+```javascript {.line-numbers}
 let defaultName;
-if (username){
+if (username) {
   defaultName = username;
 } else {
   defaultName = 'Stranger';
@@ -128,6 +128,6 @@ if (username){
 
 等价于
 
-```javascript{.line-numbers}
+```javascript {.line-numbers}
 let defaultName = username || 'Stranger';
 ```
