@@ -131,3 +131,6 @@ if (username) {
 ```javascript {.line-numbers}
 let defaultName = username || 'Stranger';
 ```
+
+## 三元运算符(Ternary Operator)
+
