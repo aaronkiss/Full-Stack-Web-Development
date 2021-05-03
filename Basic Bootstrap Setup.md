@@ -58,4 +58,4 @@ Tags: CSS, Design, Front-side, JavaScript, UX, Web, html
 
 ### 关于“优雅降级”：如果某人使用的浏览器略有缺陷，而该浏览器没有完整的功能，则它可以确保网站不会完全失败。
 
-总结**:HTML5是目前html最新的版本。填充程序使人们可以在不支持html5的旧浏览器上查看网站。    Bootstrap是一个CSS库，但也具有JavaScript的部分，这些JavaScript部分提供了纯CSS无法提供的交互功能。**
+**总结:HTML5是目前html最新的版本。填充程序使人们可以在不支持html5的旧浏览器上查看网站。    Bootstrap是一个CSS库，但也具有JavaScript的部分，这些JavaScript部分提供了纯CSS无法提供的交互功能。**
