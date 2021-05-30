@@ -1,0 +1,1041 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>完整的图像库数据结构 Data structure</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="d172193b-026c-45c2-9515-4edb9166a750" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/nasa_space_shuttle_columbia_and_sunrise.jpg" style="object-position:center 0%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🎎</span></div><h1 class="page-title">完整的图像库数据结构 Data structure</h1><table class="properties"><tbody><tr class="property-row property-row-created_time"><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesCreatedAt"><path d="M6.98643729,14.0000972 C5.19579566,14.0000972 3.40419152,13.3106896 2.04245843,11.9323606 C-0.681017475,9.21200555 -0.680780251,4.76029539 2.04293482,2.04012507 C4.76664406,-0.68004331 9.22427509,-0.68004331 11.9480135,2.04013479 C13.272481,3.36277455 14,5.1330091 14,6.99552762 C14,8.87640182 13.2721894,10.6285043 11.9480135,11.9509302 C10.5679344,13.3105924 8.77756503,14.0000972 6.98643729,14.0000972 Z M10.2705296,7.00913883 L10.2705296,8.46099754 L10.2705296,8.65543362 L10.076181,8.65543362 L8.6543739,8.65543362 L5.72059514,8.65543362 L5.52619796,8.65543362 L5.52619796,8.46099754 L5.52619796,5.52541044 L5.52619796,3.37946773 L5.52619796,3.18502193 L5.72059514,3.18502193 L7.17253164,3.18502193 L7.36692883,3.18502193 L7.36692883,3.37946773 L7.36692883,6.81467358 L10.076181,6.81467358 L10.2705296,6.81467358 L10.2705296,7.00913883 Z M12.1601539,6.99552762 C12.1601539,5.61697497 11.6190112,4.32597154 10.6393933,3.34769528 C8.63253764,1.34336744 5.35197452,1.34061603 3.34153136,3.33944106 C3.33868273,3.34219247 3.33607716,3.34494388 3.33322852,3.34769528 C1.32397148,5.35459953 1.32372842,8.63641682 3.33322852,10.6433794 C5.34295224,12.6504489 8.62968901,12.6504489 10.6393933,10.6433794 C11.6190112,9.66506426 12.1601539,8.37408027 12.1601539,6.99552762 Z"></path></svg></span>Created</th><td><time>@May 24, 2021 1:39 PM</time></td></tr><tr class="property-row property-row-multi_select"><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesMultipleSelect"><path d="M4,3 C4,2.447715 4.447715,2 5,2 L12,2 C12.5523,2 13,2.447716 13,3 C13,3.55228 12.5523,4 12,4 L5,4 C4.447715,4 4,3.55228 4,3 Z M4,7 C4,6.447715 4.447715,6 5,6 L12,6 C12.5523,6 13,6.447716 13,7 C13,7.55228 12.5523,8 12,8 L5,8 C4.447715,8 4,7.55228 4,7 Z M4,11 C4,10.447715 4.447715,10 5,10 L12,10 C12.5523,10 13,10.447716 13,11 C13,11.55228 12.5523,12 12,12 L5,12 C4.447715,12 4,11.55228 4,11 Z M2,4 C1.44771525,4 1,3.55228475 1,3 C1,2.44771525 1.44771525,2 2,2 C2.55228475,2 3,2.44771525 3,3 C3,3.55228475 2.55228475,4 2,4 Z M2,8 C1.44771525,8 1,7.55228475 1,7 C1,6.44771525 1.44771525,6 2,6 C2.55228475,6 3,6.44771525 3,7 C3,7.55228475 2.55228475,8 2,8 Z M2,12 C1.44771525,12 1,11.5522847 1,11 C1,10.4477153 1.44771525,10 2,10 C2.55228475,10 3,10.4477153 3,11 C3,11.5522847 2.55228475,12 2,12 Z"></path></svg></span>Tags</th><td><span class="selected-value select-value-color-default">Bootstrap</span><span class="selected-value select-value-color-gray">Design</span><span class="selected-value select-value-color-yellow">Front-side</span><span class="selected-value select-value-color-pink">Handlebars</span><span class="selected-value select-value-color-purple">JavaScript</span><span class="selected-value select-value-color-red">Web</span><span class="selected-value select-value-color-green">html</span></td></tr></tbody></table></header><div class="page-body"><div id="02a30f70-7892-4d95-ae4f-09c04ab65c1d" class="column-list"><div id="68bd4706-ea55-46aa-9b57-cba3b1c84782" style="width:12.5%" class="column"><h3 id="20f1d03f-45c4-49a6-b015-4ba36107d00c" class="">要点回顾</h3><p id="52c5654b-cc4f-4faf-bb7f-e04c5479b08e" class=""><code>&lt;meta&gt;</code> 标签</p><p id="4575625e-196a-4a05-8e0c-303d0737650c" class="">Handlebars 助手代码</p><h3 id="e1652d6e-bda1-4074-9e42-69adac9dc333" class="">参考网站</h3><p id="38217e13-6df2-4d5d-b733-d63a6af60758" class=""><a href="https://www.runoob.com/tags/tag-meta.html">https://www.runoob.com/tags/tag-meta.html</a></p></div><div id="cca832cd-8071-4c2a-9cd5-e1db15cfc304" style="width:87.5%" class="column"><h3 id="8e0e2957-2a92-435d-8109-654f64be1878" class="">随堂笔记</h3><p id="9dbbd820-8e57-4767-bcc2-2be0da199ee1" class="">完整的index代码：</p><pre id="baa2201f-56bb-4182-abf0-24cbb3d3ee81" class="code code-wrap"><code>&lt;!DOCTYPE html&gt;
+&lt;!-- 这是图片库的完整实例的复刻 --&gt;
+
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+        &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+        &lt;title&gt;图片库&lt;/title&gt;
+
+        &lt;script src=&quot;js/jquery.min.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;js/handlebars-v3.0.3.js&quot;&gt;&lt;/script&gt;
+
+        &lt;!-- 
+            这里是我们的 JavaScript 文件。
+            Albums.js 包含了 data 数据。
+            gallery.js 是代码 
+        --&gt;
+        &lt;script src=&quot;js/Albums.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;js/gallery.js&quot;&gt;&lt;/script&gt;
+
+        &lt;link href=&quot;css/bootstrap.css&quot; rel=&quot;stylesheet&quot;&gt;
+        &lt;link href=&quot;css/gallery.css&quot; rel=&quot;stylesheet&quot;&gt;
+
+        &lt;!-- IE8 对于 HTML5 和 Respond.js 的支持--&gt;
+        &lt;!-- WARNING: Respond.js dost&#x27;t work if you view the page via file:// --&gt;
+        &lt;!-- [if lt IE9]&gt;
+            &lt;script src=&quot;https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js&quot;&gt;&lt;/script&gt;
+            &lt;script src=&quot;https://oss.maxcdn.com/respond/1.4.2/respond.min.js&quot;&gt;&lt;/script&gt;
+        &lt;![endif]--&gt;
+        
+    &lt;/head&gt;
+
+    &lt;body&gt;
+
+        &lt;div class=&quot;container&quot;&gt;
+
+            &lt;!-- 页面标题 --&gt;
+            &lt;div class=&quot;page-header&quot;&gt;
+                &lt;h1&gt;我的相册&lt;/h1&gt;
+            &lt;/div&gt;
+
+            &lt;!-- 导航菜单可以选择不同的视图 --&gt;
+            &lt;ul class=&quot;nav nav-tabs&quot;&gt;
+                &lt;li role=&quot;&quot; class=&quot;active&quot;&gt;&lt;a href=&quot;#&quot; id=&quot;albums-tab&quot;&gt;Albums&lt;/a&gt;&lt;/li&gt;
+                &lt;li role=&quot;&quot;&gt;&lt;a href=&quot;#&quot; id=&quot;photos-tab&quot;&gt;Photos&lt;/a&gt;&lt;/li&gt;
+                &lt;li role=&quot;&quot;&gt;&lt;a href=&quot;#&quot; id=&quot;slideshow-tab&quot;&gt;Slideshow&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;br/&gt;&lt;br/&gt;
+
+            &lt;!-- 这里是空白的 content，使用模版和JavaScript生成的内容填充 --&gt;
+            &lt;div id=&quot;content&quot; class=&quot;container-fluid&quot; role=&quot;main&quot;&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;&lt;!-- /.container --&gt;
+
+
+        &lt;!-- 这里是模版 --&gt;
+
+        &lt;!-- 这里是相册视图的模版 --&gt;
+        &lt;!--
+            使用 bootstrap 网格显示相册，通过模版的 {{#each}} 助手代码实现。
+            每个相册都用缩略图显示，包含名字和照片数量，通过模版的 {{photos.length}} 表达式实现。
+        --&gt;
+        &lt;script id=&quot;albums-template&quot; type=&quot;text/x-handlebars-template&quot;&gt;
+            &lt;div class=&quot;row&quot;&gt;
+
+                {{#each albums}}
+
+                &lt;div class=&quot;col-xs-12 col-md-3&quot;&gt;
+                    &lt;div class=&quot;album-thumbnail&quot; data-id=&quot;{{@index}}&quot;&gt;
+                        &lt;img class=&quot;crop-img&quot; src=&quot;{{thumbnail}}&quot; alt=&quot;&quot;/&gt;
+
+                        &lt;div class=&quot;caption&quot;&gt;
+                            &lt;h4&gt; {{name}} &lt;/h4&gt;
+                            &lt;p&gt;{{photos.length}} photos&lt;/p&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;&lt;!-- / col --&gt;
+
+                {{/each}}
+            &lt;/div&gt;&lt;!-- / row --&gt;
+        &lt;/script&gt;
+
+        &lt;!-- 这里是单个相册中照片的视图模版 --&gt;
+        &lt;!--
+            如同相册视图那样，使用 bootstrap 网格显示相册中的每个照片、名字、说明
+        --&gt;
+        &lt;script id=&quot;photos-template&quot; type=&quot;text/x-handlebars-template&quot;&gt;
+            &lt;div class=&quot;row&quot;&gt;
+                &lt;!-- xs-12: 小屏幕设备显示一个相册，使用12个格子 --&gt;
+                &lt;!-- md-3: 中等尺寸及以上的设备每个相册占用3个格子显示 --&gt;
+
+                {{#each photos}}
+                &lt;div class=&quot;col-xs-12 col-md-3&quot;&gt;
+                    &lt;div class=&quot;photo-thumbnail&quot; data-id=&quot;{{@index}}&quot;&gt;
+                        &lt;img class=&quot;crop-img&quot; src=&quot;{{src}}&quot; alt=&quot;&quot;/&gt;
+
+                        &lt;div class=&quot;caption&quot;&gt;
+                            &lt;h3&gt;{{title}}&lt;/h3&gt;
+                            &lt;p&gt;{{description}}&lt;/p&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;&lt;!-- / col --&gt;
+                {{/each}}
+            &lt;/div&gt;&lt;!-- / row --&gt;
+        &lt;/script&gt;
+
+        &lt;!-- 这里是单个照片视图的模版 --&gt;
+        &lt;!-- 此模版显示的是大图、标题、说明 --&gt;
+        &lt;script id=&quot;photo-template&quot; type=&quot;text/x-handlebars-template&quot;&gt;
+            &lt;div class=&quot;row&quot;&gt;
+                &lt;div class=&quot;col-xs-12 col-md-12&quot;&gt;
+                    &lt;img class=&quot;large-img&quot; src=&quot;{{src}}&quot; alt=&quot;&quot;/&gt;
+
+                    &lt;div class=&quot;caption&quot;&gt;
+                        &lt;h3&gt;{{title}}&lt;/h3&gt;
+                        &lt;p&gt;{{description}}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;&lt;!-- / col --&gt;
+            &lt;/div&gt;&lt;!-- / row --&gt;
+        &lt;/script&gt;
+
+        &lt;!-- 这里是滑动显示图片的模版 --&gt;
+        &lt;!--
+            使用轮播（carousel）视图，是一种复杂的模版
+        --&gt;
+        &lt;script id=&quot;slideshow-template&quot; type=&quot;text/x-handlebars-template&quot;&gt;
+            &lt;div class=&quot;row&quot;&gt;
+                &lt;div class=&quot;col-md-6&quot;&gt;
+
+                    &lt;div id=&quot;carousel-example-generic&quot; class=&quot;carousel slide&quot; data-ride=&quot;carousel&quot;&gt;
+
+                        &lt;ol class=&quot;carousel-indicators&quot;&gt;
+                            &lt;li data-target=&quot;#carousel-example-generic&quot; data-slide-to=&quot;0&quot; class=&quot;active&quot;&gt;&lt;/li&gt;
+                            &lt;li data-target=&quot;#carousel-example-generic&quot; data-slide-to=&quot;1&quot;&gt;&lt;/li&gt;
+                            &lt;li data-target=&quot;#carousel-example-generic&quot; data-slide-to=&quot;2&quot;&gt;&lt;/li&gt;
+                        &lt;/ol&gt;
+
+
+                        &lt;!-- 打包滑动相册 --&gt;
+                        &lt;div class=&quot;carousel-inner&quot; role=&quot;listbox&quot;&gt;
+
+                            {{#each photos}}
+                            &lt;div class=&quot;item {{#if @first}}active{{/if}}&quot;&gt;
+                                &lt;img class=&quot;carousel-img&quot; src=&quot;{{src}}&quot; alt=&quot;&quot;/&gt;
+                                &lt;div class=&quot;carousel-caption&quot;&gt;
+                                    Image caption
+                                &lt;/div&gt;
+                            &lt;/div&gt;&lt;!-- / carousel item --&gt;
+                            {{/each}}
+                        &lt;/div&gt;
+
+                        &lt;!-- 这里是控制方法 --&gt;
+                        &lt;a class=&quot;left carousel-control&quot; href=&quot;#carousel-example-generic&quot; role=&quot;button&quot; data-slide=&quot;prev&quot;&gt;
+                            &lt;span class=&quot;glyphicon glyphicon-chevron-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
+                            &lt;span class=&quot;sr-only&quot;&gt;Previous&lt;/span&gt;
+                        &lt;/a&gt;
+                        &lt;a class=&quot;right carousel-control&quot; href=&quot;#carousel-example-generic&quot; role=&quot;button&quot; data-slide=&quot;next&quot;&gt;
+                            &lt;span class=&quot;glyphicon glyphicon-chevron-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
+                            &lt;span class=&quot;sr-only&quot;&gt;Next&lt;/span&gt;
+                        &lt;/a&gt;
+                    &lt;/div&gt;
+
+                &lt;/div&gt; &lt;!-- / carousel --&gt;
+            &lt;/div&gt; &lt;!-- / col --&gt;
+        &lt;/script&gt; &lt;!-- /row --&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre><ul id="1299d8b5-755d-425a-8e2f-dd4c9d9f6b90" class="bulleted-list"><li><code>&lt;meta&gt;</code> 提供了HTML文档的元数据，通常用于指定网页的描述、关键词、文件的最后修改时间、作者等信息。其内的信息可以被浏览器、搜索引擎或其他Web服务调用。</li></ul><pre id="2eaa51d7-bf09-4fd7-8845-2986e79e8125" class="code code-wrap"><code>&lt;!-- 用于搜索关键词 --&gt;
+&lt;meta name=&quot;keyworks&quot; content=&quot;HTML, CSS, XML, XHTML, Javascript&quot;&gt;
+
+&lt;!-- 定义Web页面描述 --&gt;
+&lt;meta name=&quot;description&quot; content=&quot;Free Web tutorials on HTML and CSS&quot;&gt;
+
+&lt;!-- 定义页面作者 --&gt;
+&lt;meta name=&quot;author&quot; content=&quot;Hege Refsnes&quot;&gt;
+
+&lt;!-- 每30秒刷新页面 --&gt;
+&lt;meta http-equiv=&quot;refresh&quot; content=&quot;30&quot;&gt;</code></pre><ul id="a2d1da57-bf9e-41a0-95cc-73028d9191e7" class="bulleted-list"><li><code>&lt;meta&gt;</code> 新属性：</li></ul><div id="f47a8062-755f-47ec-a31a-93fea13d9519" class="collection-content"><h4 class="collection-title"></h4><table class="collection-content"><thead><tr><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesTitle"><path d="M7.73943662,8.6971831 C7.77640845,8.7834507 7.81338028,8.8943662 7.81338028,9.00528169 C7.81338028,9.49823944 7.40669014,9.89260563 6.91373239,9.89260563 C6.53169014,9.89260563 6.19894366,9.64612676 6.08802817,9.30105634 L5.75528169,8.33978873 L2.05809859,8.33978873 L1.72535211,9.30105634 C1.61443662,9.64612676 1.2693662,9.89260563 0.887323944,9.89260563 C0.394366197,9.89260563 0,9.49823944 0,9.00528169 C0,8.8943662 0.0246478873,8.7834507 0.0616197183,8.6971831 L2.46478873,2.48591549 C2.68661972,1.90669014 3.24119718,1.5 3.90669014,1.5 C4.55985915,1.5 5.12676056,1.90669014 5.34859155,2.48591549 L7.73943662,8.6971831 Z M2.60035211,6.82394366 L5.21302817,6.82394366 L3.90669014,3.10211268 L2.60035211,6.82394366 Z M11.3996479,3.70598592 C12.7552817,3.70598592 14,4.24823944 14,5.96126761 L14,9.07922535 C14,9.52288732 13.6549296,9.89260563 13.2112676,9.89260563 C12.8169014,9.89260563 12.471831,9.59683099 12.4225352,9.19014085 C12.028169,9.6584507 11.3257042,9.95422535 10.5492958,9.95422535 C9.60035211,9.95422535 8.47887324,9.31338028 8.47887324,7.98239437 C8.47887324,6.58978873 9.60035211,6.08450704 10.5492958,6.08450704 C11.3380282,6.08450704 12.040493,6.33098592 12.4348592,6.81161972 L12.4348592,5.98591549 C12.4348592,5.38204225 11.9172535,4.98767606 11.1285211,4.98767606 C10.6602113,4.98767606 10.2411972,5.11091549 9.80985915,5.38204225 C9.72359155,5.43133803 9.61267606,5.46830986 9.50176056,5.46830986 C9.18133803,5.46830986 8.91021127,5.1971831 8.91021127,4.86443662 C8.91021127,4.64260563 9.0334507,4.44542254 9.19366197,4.34683099 C9.87147887,3.90316901 10.6232394,3.70598592 11.3996479,3.70598592 Z M11.1778169,8.8943662 C11.6830986,8.8943662 12.1760563,8.72183099 12.4348592,8.37676056 L12.4348592,7.63732394 C12.1760563,7.29225352 11.6830986,7.11971831 11.1778169,7.11971831 C10.5616197,7.11971831 10.056338,7.45246479 10.056338,8.0193662 C10.056338,8.57394366 10.5616197,8.8943662 11.1778169,8.8943662 Z M0.65625,11.125 L13.34375,11.125 C13.7061869,11.125 14,11.4188131 14,11.78125 C14,12.1436869 13.7061869,12.4375 13.34375,12.4375 L0.65625,12.4375 C0.293813133,12.4375 4.43857149e-17,12.1436869 0,11.78125 C-4.43857149e-17,11.4188131 0.293813133,11.125 0.65625,11.125 Z"></path></svg></span>属性</th><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesText"><path d="M7,4.56818 C7,4.29204 6.77614,4.06818 6.5,4.06818 L0.5,4.06818 C0.223858,4.06818 0,4.29204 0,4.56818 L0,5.61364 C0,5.88978 0.223858,6.11364 0.5,6.11364 L6.5,6.11364 C6.77614,6.11364 7,5.88978 7,5.61364 L7,4.56818 Z M0.5,1 C0.223858,1 0,1.223858 0,1.5 L0,2.54545 C0,2.8216 0.223858,3.04545 0.5,3.04545 L12.5,3.04545 C12.7761,3.04545 13,2.8216 13,2.54545 L13,1.5 C13,1.223858 12.7761,1 12.5,1 L0.5,1 Z M0,8.68182 C0,8.95796 0.223858,9.18182 0.5,9.18182 L11.5,9.18182 C11.7761,9.18182 12,8.95796 12,8.68182 L12,7.63636 C12,7.36022 11.7761,7.13636 11.5,7.13636 L0.5,7.13636 C0.223858,7.13636 0,7.36022 0,7.63636 L0,8.68182 Z M0,11.75 C0,12.0261 0.223858,12.25 0.5,12.25 L9.5,12.25 C9.77614,12.25 10,12.0261 10,11.75 L10,10.70455 C10,10.4284 9.77614,10.20455 9.5,10.20455 L0.5,10.20455 C0.223858,10.20455 0,10.4284 0,10.70455 L0,11.75 Z"></path></svg></span>值</th><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesText"><path d="M7,4.56818 C7,4.29204 6.77614,4.06818 6.5,4.06818 L0.5,4.06818 C0.223858,4.06818 0,4.29204 0,4.56818 L0,5.61364 C0,5.88978 0.223858,6.11364 0.5,6.11364 L6.5,6.11364 C6.77614,6.11364 7,5.88978 7,5.61364 L7,4.56818 Z M0.5,1 C0.223858,1 0,1.223858 0,1.5 L0,2.54545 C0,2.8216 0.223858,3.04545 0.5,3.04545 L12.5,3.04545 C12.7761,3.04545 13,2.8216 13,2.54545 L13,1.5 C13,1.223858 12.7761,1 12.5,1 L0.5,1 Z M0,8.68182 C0,8.95796 0.223858,9.18182 0.5,9.18182 L11.5,9.18182 C11.7761,9.18182 12,8.95796 12,8.68182 L12,7.63636 C12,7.36022 11.7761,7.13636 11.5,7.13636 L0.5,7.13636 C0.223858,7.13636 0,7.36022 0,7.63636 L0,8.68182 Z M0,11.75 C0,12.0261 0.223858,12.25 0.5,12.25 L9.5,12.25 C9.77614,12.25 10,12.0261 10,11.75 L10,10.70455 C10,10.4284 9.77614,10.20455 9.5,10.20455 L0.5,10.20455 C0.223858,10.20455 0,10.4284 0,10.70455 L0,11.75 Z"></path></svg></span>描述</th></tr></thead><tbody><tr id="77d4267e-c7eb-4eb2-936d-734f35498749"><td class="cell-title"><a href="https://www.notion.so/charset-77d4267ec7eb4eb2936d734f35498749">charset</a></td><td class="cell-bnTS">character_set</td><td class="cell-lEsn">定义文档的字符编码</td></tr><tr id="4026055d-641d-4c88-8695-8fa07977e684"><td class="cell-title"><a href="https://www.notion.so/content-4026055d641d4c8886958fa07977e684">content</a></td><td class="cell-bnTS">text</td><td class="cell-lEsn">定义与 http-equiv 或 name 属性相关的元信息</td></tr><tr id="3e720aaf-8f6e-482e-aba3-39d65e1dd5d9"><td class="cell-title"><a href="https://www.notion.so/http-equiv-3e720aaf8f6e482eaba339d65e1dd5d9">http-equiv</a></td><td class="cell-bnTS">content-type
+default-style
+refresh</td><td class="cell-lEsn">把 content 属性关联到 HTTP 头部</td></tr><tr id="dc8f6b9f-eaa6-4a44-b764-389c6aad1090"><td class="cell-title"><a href="https://www.notion.so/name-dc8f6b9feaa64a44b764389c6aad1090">name</a></td><td class="cell-bnTS">application-name
+author
+description
+generator
+keywords</td><td class="cell-lEsn">把 content 属性关联到一个名称</td></tr><tr id="b57f866d-f5ec-458f-b6d6-70d2f3206d54"><td class="cell-title"><a href="https://www.notion.so/scheme-b57f866df5ec458fb6d670d2f3206d54">scheme</a></td><td class="cell-bnTS">format/URI</td><td class="cell-lEsn"><mark class="highlight-red">HTML5不支持</mark>。定义用于翻译content属性值的格式</td></tr></tbody></table></div><div id="a6c44116-6080-4089-81f6-ae5de0a72274" class="collection-content"><h4 class="collection-title">用于移动端显示优化的 viewport 属性</h4><table class="collection-content"><thead><tr><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesTitle"><path d="M7.73943662,8.6971831 C7.77640845,8.7834507 7.81338028,8.8943662 7.81338028,9.00528169 C7.81338028,9.49823944 7.40669014,9.89260563 6.91373239,9.89260563 C6.53169014,9.89260563 6.19894366,9.64612676 6.08802817,9.30105634 L5.75528169,8.33978873 L2.05809859,8.33978873 L1.72535211,9.30105634 C1.61443662,9.64612676 1.2693662,9.89260563 0.887323944,9.89260563 C0.394366197,9.89260563 0,9.49823944 0,9.00528169 C0,8.8943662 0.0246478873,8.7834507 0.0616197183,8.6971831 L2.46478873,2.48591549 C2.68661972,1.90669014 3.24119718,1.5 3.90669014,1.5 C4.55985915,1.5 5.12676056,1.90669014 5.34859155,2.48591549 L7.73943662,8.6971831 Z M2.60035211,6.82394366 L5.21302817,6.82394366 L3.90669014,3.10211268 L2.60035211,6.82394366 Z M11.3996479,3.70598592 C12.7552817,3.70598592 14,4.24823944 14,5.96126761 L14,9.07922535 C14,9.52288732 13.6549296,9.89260563 13.2112676,9.89260563 C12.8169014,9.89260563 12.471831,9.59683099 12.4225352,9.19014085 C12.028169,9.6584507 11.3257042,9.95422535 10.5492958,9.95422535 C9.60035211,9.95422535 8.47887324,9.31338028 8.47887324,7.98239437 C8.47887324,6.58978873 9.60035211,6.08450704 10.5492958,6.08450704 C11.3380282,6.08450704 12.040493,6.33098592 12.4348592,6.81161972 L12.4348592,5.98591549 C12.4348592,5.38204225 11.9172535,4.98767606 11.1285211,4.98767606 C10.6602113,4.98767606 10.2411972,5.11091549 9.80985915,5.38204225 C9.72359155,5.43133803 9.61267606,5.46830986 9.50176056,5.46830986 C9.18133803,5.46830986 8.91021127,5.1971831 8.91021127,4.86443662 C8.91021127,4.64260563 9.0334507,4.44542254 9.19366197,4.34683099 C9.87147887,3.90316901 10.6232394,3.70598592 11.3996479,3.70598592 Z M11.1778169,8.8943662 C11.6830986,8.8943662 12.1760563,8.72183099 12.4348592,8.37676056 L12.4348592,7.63732394 C12.1760563,7.29225352 11.6830986,7.11971831 11.1778169,7.11971831 C10.5616197,7.11971831 10.056338,7.45246479 10.056338,8.0193662 C10.056338,8.57394366 10.5616197,8.8943662 11.1778169,8.8943662 Z M0.65625,11.125 L13.34375,11.125 C13.7061869,11.125 14,11.4188131 14,11.78125 C14,12.1436869 13.7061869,12.4375 13.34375,12.4375 L0.65625,12.4375 C0.293813133,12.4375 4.43857149e-17,12.1436869 0,11.78125 C-4.43857149e-17,11.4188131 0.293813133,11.125 0.65625,11.125 Z"></path></svg></span>属性</th><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesText"><path d="M7,4.56818 C7,4.29204 6.77614,4.06818 6.5,4.06818 L0.5,4.06818 C0.223858,4.06818 0,4.29204 0,4.56818 L0,5.61364 C0,5.88978 0.223858,6.11364 0.5,6.11364 L6.5,6.11364 C6.77614,6.11364 7,5.88978 7,5.61364 L7,4.56818 Z M0.5,1 C0.223858,1 0,1.223858 0,1.5 L0,2.54545 C0,2.8216 0.223858,3.04545 0.5,3.04545 L12.5,3.04545 C12.7761,3.04545 13,2.8216 13,2.54545 L13,1.5 C13,1.223858 12.7761,1 12.5,1 L0.5,1 Z M0,8.68182 C0,8.95796 0.223858,9.18182 0.5,9.18182 L11.5,9.18182 C11.7761,9.18182 12,8.95796 12,8.68182 L12,7.63636 C12,7.36022 11.7761,7.13636 11.5,7.13636 L0.5,7.13636 C0.223858,7.13636 0,7.36022 0,7.63636 L0,8.68182 Z M0,11.75 C0,12.0261 0.223858,12.25 0.5,12.25 L9.5,12.25 C9.77614,12.25 10,12.0261 10,11.75 L10,10.70455 C10,10.4284 9.77614,10.20455 9.5,10.20455 L0.5,10.20455 C0.223858,10.20455 0,10.4284 0,10.70455 L0,11.75 Z"></path></svg></span>描述</th></tr></thead><tbody><tr id="ea608918-e724-4334-9189-62752e9c6e7a"><td class="cell-title"><a href="https://www.notion.so/width-ea608918e7244334918962752e9c6e7a">width</a></td><td class="cell-uIxi">设置 layout viewport 的宽度，为一个正整数，或字符串“width-device”</td></tr><tr id="fe2b2c3e-b3ae-4cb9-b3bb-5d0658dd409f"><td class="cell-title"><a href="https://www.notion.so/initial-scale-fe2b2c3eb3ae4cb9b3bb5d0658dd409f">initial-scale</a></td><td class="cell-uIxi">设置页面的初始缩放值，为一个数字，可以带小数</td></tr><tr id="54516136-d27e-4d41-b1f1-01c1f16ec2be"><td class="cell-title"><a href="https://www.notion.so/minimum-scale-54516136d27e4d41b1f101c1f16ec2be">minimum-scale</a></td><td class="cell-uIxi">允许用户的最小缩放值，为一个数字，可以带小数</td></tr><tr id="b830a407-1db4-4cc2-b1cf-688e050052bd"><td class="cell-title"><a href="https://www.notion.so/maximum-scale-b830a4071db44cc2b1cf688e050052bd">maximum-scale</a></td><td class="cell-uIxi">允许用户的最大缩放值，为一个数字，可以带小数</td></tr><tr id="7a10d5f2-d217-4bf1-9c15-72a7986c44f1"><td class="cell-title"><a href="https://www.notion.so/height-7a10d5f2d2174bf19c1572a7986c44f1">height</a></td><td class="cell-uIxi">设置 layout viewport 的高度，这个属性并不重要，很少使用</td></tr><tr id="566e0262-2e18-48bd-967f-c2559e20ab8f"><td class="cell-title"><a href="https://www.notion.so/user-scalable-566e02622e1848bd967fc2559e20ab8f">user-scalable</a></td><td class="cell-uIxi">是否允许用户进行缩放，值为“no“或”yes“</td></tr></tbody></table></div><h3 id="bb9f8dae-5ad2-4afe-803e-31d6368c4538" class=""><mark class="highlight-red">关于 {{#if }} {{/if}} 的用法 </mark></h3><p id="664355c5-a799-4243-aa71-83593cc2f0e9" class="">（参考的 ember.js）</p><p id="51d5c845-f106-4076-9a5d-6f89d99b6c09" class="">在模版中，可以使用 <code>if</code> 有条件的呈现内容。有两种样式的 <code>if</code> ：块（block）和内联（inline）。</p><pre id="9066e733-7130-4ef9-a078-ffed44d76a26" class="code code-wrap"><code>//块（block）样式
+{{#if this.thingIsTrue}}
+	Content for the block form of &quot;if&quot;
+{{/if}}
+
+//内联（inline）样式
+&lt;div class={{if this.thingIsTrue &quot;value-if-true&quot; &quot;value-if-false&quot;}}
+	This div used the inline &quot;if&quot; to calculate the class to use.
+&lt;/div&gt;</code></pre><h3 id="58c66b50-1fef-4bb2-aab0-d6ee35791400" class="">🧠思考</h3><p id="fcbd6299-2c5d-49d1-8510-5afbc7f1da02" class="">以下有两个关于用户名的组件：</p><pre id="8efd059a-6f11-4224-a343-2df7f444b513" class="code code-wrap"><code>&lt;!-- 组件1 --&gt;
+&lt;h4 class=&quot;username&quot;&gt;
+	Tomster
+	&lt;span class=&quot;local-time&quot;&gt;their local time is 4:56pm&lt;/span&gt;
+&lt;/h4&gt;
+
+&lt;!-- 组件2 --&gt;
+&lt;h4 class=&quot;username&quot;&gt;
+	Zoey
+&lt;/h4&gt;</code></pre><p id="4fd57e88-1945-4d6c-8bb1-3db61c298d8c" class="">第一个组件显示了有关用户本地时间的额外信息。</p><p id="e7209fa1-a052-44de-b09f-3f660f9dbdc8" class="">如果 <code>Username</code> 标签没有指定  <code>@localTime</code> 参数，那么 <code>their local time is</code> 在屏幕上将是一个不完整的文本。</p><p id="cad5cb5b-aa7a-4142-a651-9eb96e48aaf0" class="">显示本地时间的方法（如果 <code>@localTime</code> 被指定的话），可以使用 <code>if</code> 。</p><pre id="ea8dd19e-0ab6-4c23-abf4-11d4ad6d42aa" class="code code-wrap"><code>&lt;h4 class=&quot;username&quot;&gt;
+	{{@name}}
+	{{#if @localTime}}
+		&lt;span class=&quot;local-time&quot;&gt;their local time is {{@localTime}}&lt;/span&gt;
+	{{/if}}
+&lt;/h4&gt;</code></pre><p id="ee9ede13-9856-44bc-b91a-aeee3a634e8d" class="">
+</p><p id="b295d303-35c0-49c2-8caa-45c1dacf8260" class="">
+</p><p id="71f87159-2f86-4afc-b65e-ded7d80a22a5" class="">Albums.js 文件代码:</p><pre id="806f2574-6abc-405c-8c2a-803dc8013de3" class="code code-wrap"><code>//这个文件包含了data数据。 “gallery” 包含了一个数组，数组中有每个相册的图片、名称、缩略图等内容
+
+var gallery = {
+	albums : [
+		{
+			name: &quot;Travels&quot;,
+			thumbnail: &quot;images/img_1.jpg&quot;,
+			photos: [
+				{
+					src: &quot;images.img_1.jpg&quot;,
+					title: &quot;grafitti&quot;,
+					description: &quot;some derelict appartments with grafitti&quot;
+				},
+				{
+					src: &quot;images/img_6.jpg&quot;,
+					title: &quot;fountain&quot;,
+					description: &quot;a huge dragon fountain&quot;
+				},
+				{
+					src: &quot;images/img_7.jpg&quot;,
+					title: &quot;images/img_8.jpg&quot;,
+					description: &quot;an interesting interior&quot;
+				}
+			]  //photos数组结束
+		},  //albums数组中元素结束
+		{
+			name: &quot;Equipment&quot;,
+			thumbnail: &quot;images/img_4.jpg&quot;,
+			photos: [
+				{
+					src: &quot;images/img_4.jpg&quot;,
+					title: &quot;syths&quot;,
+					description: &quot;all workshops should aspire to being this tidy&quot;
+				},
+				{
+					src: &quot;images/img_9.jpg&quot;,
+					title: &quot;helmet&quot;,
+					description: &quot;a sci-fi helmet&quot;
+				},
+				{
+					src: &quot;images/img_12.jpg&quot;,
+					title: &quot;drums&quot;,
+					description: &quot;a rather nice drum kit&quot;
+				}
+			]
+		},
+		{
+			name: &quot;English Winter&quot;,
+			title: &quot;images/img_17.jpg&quot;,
+			photos: [
+				{
+					src: &quot;images/img_16.jpg&quot;,
+					title: &quot;dog in the snow&quot;,
+					description: &quot;looks like he needs that jacket&quot;
+				},
+				{
+					src: &quot;images/img_17.jpg&quot;,
+					title: &quot;winter&quot;,
+					descripthon: &quot;a  snowy scene in a park&quot;
+				},
+				{
+					src: &quot;images/img_18.jpg&quot;,
+					title: &quot;frosty pond&quot;,
+					description: &quot;some ducks feeling cold&quot;
+				}
+			]
+		}
+	]  //albums数组结束
+};  //gallery变量结束</code></pre><p id="716e2c93-03af-42ee-aa1a-39b669f9beb0" class="">gallery.js 代码：</p><pre id="212757a0-b7c3-4c23-8b2a-eac40580fc2a" class="code code-wrap"><code>/* 这个文件包含了 JavaScript 代码 */
+
+//所有模版的变量在页面载入的时候进行一次性解析，并可以在随后随时使用很多次
+var albums_template, photos_template, photo_template, slideshow_template;
+
+
+//存储当前显示的相册和照片的变量
+var current_album = gallery.albums[0];
+var current_photo = current_album.photos[0];
+
+//实例化模板并在内容 div 中显示结果的辅助函数
+function showTemplate(template, data) {
+	var html = template(data);
+	$(&#x27;#content&#x27;).html(html);
+}
+
+//document read 在整个文档加载时被调用，所以我们把大部分需要运行的代码放在这里
+$(document).ready(function() {
+
+	//解析所有的模版并准备使用
+	var source = $(&quot;#albums-template&quot;).html();
+	albums_template = Handlebars.compile(source);
+
+	source = $(&quot;#photos-template&quot;).html();
+	photos_template = Handlebars.compile(source);
+
+	source = $(&quot;#photo-template&quot;).html();
+	photo_template = Handlebars.compile(source);
+
+	source = $(&quot;#slideshow-template&quot;).html();
+	slideshow_template = Handlebars.compile(source);
+
+
+	//点击缩略图tab时显示所有的缩略图
+	$(&quot;#albums-tab&quot;),click(function () {
+		
+		//显示albums 模版
+		showTemplate(albums_template, gallery);
+
+		//使 albums tab 成为 active 激活状态
+		//首先将当前活动的标签设为不活动
+		$(&quot;.nav-tabs .active&quot;).removeClass(&quot;active&quot;);
+		//然后将 albums tab 设为active
+		$(&quot;#albums-tab&quot;).addClass(&quot;active&quot;);
+
+		//向每个相册缩略图添加一个点击回调，以显示该相册中的照片模板
+		//（为了清楚起见，我已经为此函数编写了代码，但实际上它与photos选项卡功能几乎相同，
+		//因此我们实际上可以只调用$(&quot;.photo-thumbnail&quot;).click()）
+		$(&quot;.album-thumbnail&quot;).click(function () {
+			
+			//获得被点击的相册在数组中的索引
+			// “this” 是被点击的元素，data(&quot;id&quot;)获得 data-id 属性，即之前设置的相册在数组中的索引
+			var index = $(this).data(&quot;id&quot;);
+
+			//将当前相册设置为此相册
+			current_album = gallery.albums[index];
+
+			//显示照片们的模版
+			showTemplate(photos_template, current_album);
+
+			////在所有照片缩略图上添加一个单击按钮，以缩略图形式在弹出窗口中显示该照片
+			$(&quot;.photo-thumbnail&quot;).click(function () {
+
+				//获得被点击的照片的索引
+				// “this” 是被点击的元素，data(&quot;id&quot;)获得 data-id 属性，即之前设置的相册在数组中的索引
+				var index = $(this).data(&quot;id&quot;);
+
+				//将当前相册设置为此相册
+				current_photo = current_album.photo[index];
+
+				//显示单独图片的模版
+				showTemplate(photo_template, current_photo);
+			});
+		});
+	});
+
+	//点击 photos tab 后，显示当前相册的所有照片
+	$(&quot;#photos-tab&quot;).click( function () {
+
+		//显示照片们的模版
+		showTemplate(photos_template, current_albums);
+
+		//将 photos tab 设为当前活动状态
+		//首先要移除非当前项的 active
+		$(&quot;.nav-tabs .active&quot;).removeClass(&quot;active&quot;);
+
+		//然后将 photos tab 设为 active
+		$(&quot;#photos-tab&quot;).addClass(&quot;active&quot;);
+
+		//向每个相册缩略图添加一个点击回调，以显示照片的弹出式模态框
+		$(&quot;.photo-thumbnail&quot;).click(function () {
+			
+			//获得被点击照片的索引
+			//“this” 是被点击的元素，data(&quot;id&quot;)获得 data-id 属性，即之前设置的相册在数组中的索引
+			var index = $(this).data(&quot;id&quot;);
+
+			//将当前照片设为此照片
+			current_photo = current_album.photos[index];
+
+			//显示单独照片的模版
+			showTemplate(photo_template, current_album);
+		});
+	});
+
+
+	//以滑动展示为显示方式显示被点击的相册
+	$(&quot;#slideshow-tab&quot;).click(function() {
+	
+		//显示当前相册的滑动展示模版
+		showTemplate(slideshow_template, current_album);
+
+		//使 slideshow tab 成为 active 状态
+		//首先移除其他项的 active 状态
+		$(&quot;.nav-tabs .active&quot;).removeClass(&quot;active&quot;);
+
+		//将 slideshow tab设为 active 状态
+		$(&quot;#slideshow-tab&quot;).addClass(&quot;active&quot;);
+	});
+
+	//通过显示相册视图来开始页面，我们可以通过虚拟地单击相册选项卡来完成此操作
+	$(&quot;albums-tab&quot;).click();
+
+});</code></pre><h3 id="968b1670-dbad-4975-9b22-06a41e20a3c9" class="">嵌套的<mark class="highlight-red">数据结构</mark>：</h3><pre id="9a221da5-b25f-4776-8f81-87a174ce67b1" class="code code-wrap"><code>albums: [
+		{
+				name: &quot;Travels&quot;,
+				photos: [
+						{
+						src: &quot;images/img_1.jpg&quot;,
+						title: &quot;grafitti&quot;
+						},  //photos数组中元素结束
+						...
+				]  //photos数组结束
+		}  //albums数组元素结束
+		...
+]  //albums数组结束</code></pre><h3 id="9336c706-eea7-4c29-ba97-f1f8177f00ce" class=""><mark class="highlight-red">可以通过将数组放在其他数组内部的对象中来构建复杂的嵌套的数据</mark></h3><h3 id="5631a8cd-154a-48ff-912d-67946c4c6b67" class=""><mark class="highlight-red">本例中的albums也有“元数据“，比如标题、作者。所以最好让它成为一个包含数组的对象</mark></h3><p id="d79317ee-dbd1-46ed-8c98-6e34cae8b6f7" class="">
+</p><p id="dcae2185-ade3-4420-be83-262e9be1c947" class=""><strong><mark class="highlight-red">虽然本例确实为相册和照片使用了单独的模版，但是可以在另一个 {{#each}} 中包含一个 {{#each}} 来将它们组合成一个模版，以在单个模版中显示两者。</mark></strong></p><p id="ffd5c8a1-a77c-4232-8dd4-f49f6995d944" class=""><strong><mark class="highlight-red">虽然照片是一个数组，它可以像对象一样拥有成员变量，但所有数组都有成员变量“length” （实际上，在幕后数组是一种特殊类型的对象）。</mark></strong></p><p id="a38e916f-eb63-43e7-8b39-a87337553456" class=""><strong><mark class="highlight-red">#if 有点像if语句，所以它可以在不同情况下打开和关闭渲染。</mark></strong></p><p id="9aa26931-004a-4b74-9a55-78c619834cc2" class="">
+</p></div></div><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="60319f22-a9c1-46c5-9d8c-ca77105ab344"><div style="font-size:1.5em"><span class="icon">📌</span></div><div style="width:100%">总结<strong>:</strong></div></figure><p id="e20883cd-5312-4cc2-a307-f5cf722cad3e" class="">
+</p></div></article></body></html>
