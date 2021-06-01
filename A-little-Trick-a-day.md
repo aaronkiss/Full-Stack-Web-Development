@@ -1,4 +1,4 @@
-### I will try my best to write some note in English.
+### I will try my best to write some notes in English.
 
 ## VS Code Tricks
 ### quick to write code:
