@@ -79,6 +79,16 @@ p is q
 - **元组**与列表相似，用小括号表示，为不可变类型
 - **映射类型**：***字典***用打括号表示
 
+```python
+eee = 'hello ' + 'there'
+print(eee)
+print(type(eee))  # 输出变量数据类型
+print(float(99))  # 强制转换数据类型
+name = input('Who are you?')  # 输入函数可以记录键盘输入
+print('Welcome', name)
+
+```
+
 
 # 运算符
 按照优先级排列：乘方`**`，正负号`+ -`，乘除`* /`，整除`//`，取余`%`，加减`+ -`。  
