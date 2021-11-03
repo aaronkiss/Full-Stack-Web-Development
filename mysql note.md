@@ -55,6 +55,100 @@ WHERE `student_id` = 2;
 SELECT * FROM `student`;
 DELETE FROM `student`; -- 删除表格内的全部资料
 
+-- 取得资料
+SELECT `name`,`major` FROM `student`;
+SELECT * FROM `student` ORDER BY `score`; -- 按照指定的属性排序显示
+SELECT * FROM `student` ORDER BY `score` DESC; -- 倒序显示
+SELECT * FROM `student` ORDER BY `score`,`student_id`;
+SELECT * FROM `student` LIMIT 2; -- 限制显示的行数
+SELECT * FROM `student`
+WHERE `major` IN('艺人','大忽悠');
+
+
+-- 创建公司数据库表格
+
+create table `employee`(
+`emp_id` int primary key,
+`name` varchar(20),
+`birth_date` date,
+`sex` varchar(1),
+`salary` int,
+`branch_id` int,
+`sup_id` int
+);
+
+create table `branch`(
+`branch_id` int primary key,
+`branch_name` varchar(20),
+`manager_id` int,
+foreign key (`manager_id`) references `employee`(`emp_id`) on delete set null
+);
+
+alter table `employee`	-- 在 employee 表格中
+add foreign key(`branch_id`)	-- 新增 foreign key 属性到branch_id
+references `branch`(`branch_id`)	-- 对应到 branch 表格的 branch_id 属性
+on delete set null;
+
+alter table `employee`
+add foreign key(`sup_id`)
+references `employee`(`emp_id`)
+on delete set null;
+
+create table `client`(
+`client_id` int primary key,
+`client_name` varchar(20),
+`phone` varchar(20)
+);
+
+create table `work_with`(
+`emp_id` int,
+`client_id` int,
+`total_sales` int,
+primary key(`emp_id`, `client_id`),
+foreign key (`emp_id`) references `employee`(`emp_id`) on delete cascade,
+foreign key (`client_id`) references `client`(`client_id`) on delete cascade
+);
+
+-- 新增表格数据
+
+insert into `employee` values(206,'黄盖'，'0209-10-08','M',50000,1,NULL); -- 此时执行会报错，因为branch表格中的branch_id还没有创建
+-- 先新增 branch 的资料
+insert into `branch` values(1,'研发',NULL);
+insert into `branch` values(2,'行政',NULL);
+insert into `branch` values(3,'资讯',NULL);
+
+-- 再新增 employee 的资料
+insert into `employee` values(206,'杨坚','0541-07-21','M',50000,1,NULL);
+insert into `employee` values(207,'李渊','0566-04-07','M',29000,2,206);
+insert into `employee` values(208,'李玄霸','0599-10-21','M',35000,3,206);
+insert into `employee` values(209,'李世民','0598-01-23','M',39000,3,207);
+insert into `employee` values(210,'李隆基','0685-09-08','M',84000,1,207);
+
+-- 修改资料
+update `branch`
+set `manager_id` = 208
+where `branch_id` = 3;
+
+-- 新增 client 的资料
+insert into `client` values(400,'翟让','25435467834');
+insert into `client` values(401,'单雄信','27097096832');
+insert into `client` values(402,'徐世勋','15487649826');
+insert into `client` values(403,'裴仁基','21433783436');
+insert into `client` values(404,'秦叔宝','37855467834');
+
+-- 新增 work_with 资料
+insert into `work_with` values(206,400,'70000');
+insert into `work_with` values(207,401,'24000');
+insert into `work_with` values(208,402,'9800');
+insert into `work_with` values(208,403,'24000');
+insert into `work_with` values(210,404,'87580');
+
+-- 取得表格资料
+select * from `employee` order by `salary`;
+select * from `client`;
+select * from `employee` order by `salary` desc limit 3;
+select `name` from `employee`;
+
 /*-----------------------------------------------------------------*/
 INT 				-- 整数
 DECIMAL(m,n)		-- 浮点数，m表示一共几位数，n表示小数部分有几位
