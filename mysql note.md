@@ -117,6 +117,7 @@ insert into `employee` values(206,'黄盖'，'0209-10-08','M',50000,1,NULL); -- 
 insert into `branch` values(1,'研发',NULL);
 insert into `branch` values(2,'行政',NULL);
 insert into `branch` values(3,'资讯',NULL);
+insert into `branch` values(4,'偷懒',NULL);
 
 -- 再新增 employee 的资料
 insert into `employee` values(206,'杨坚','0541-07-21','M',50000,1,NULL);
