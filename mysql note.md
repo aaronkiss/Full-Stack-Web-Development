@@ -107,6 +107,7 @@ create table `work_with`(
 primary key(`emp_id`, `client_id`),
 foreign key (`emp_id`) references `employee`(`emp_id`) on delete cascade,
 foreign key (`client_id`) references `client`(`client_id`) on delete cascade
+-- on delete set NULL 意思是：如果删除数据，那么对应的属性就设置为NULL
 );
 
 -- 新增表格数据
@@ -148,6 +149,78 @@ select * from `employee` order by `salary`;
 select * from `client`;
 select * from `employee` order by `salary` desc limit 3;
 select `name` from `employee`;
+
+-- 聚合函数 aggregate function
+-- 取得员工人数
+select count(*) from `employee`;
+
+-- 取得出生于0600-01-01之后的男性员工人数
+select count(*) from `employee`
+where `birth_date` > '0600-01-01' and `sex` = 'M';
+
+-- 取得员工的平均薪水
+select avg(`salary`) from `employee`;
+
+-- 取得所有员工薪水的总和
+select sum(`salary`) from `employee`;
+
+-- 取得薪水最高的员工
+select max(`salary`) from `employee`;
+
+-- 取得薪水最低的员工
+select min(`salary`) from `employee`;
+
+-- 万用字元 wildcards %代表多个字元，_代表一个字元
+-- 取得电话号码结尾是34的客户
+select * from `client`
+where `phone` like '%34';
+
+-- 取得姓裴的客户
+select * from `client`
+where `client_name` like '裴__';
+
+-- 取得生日在7月的员工
+select * from `employee`
+where `birth_date` like '____-07-__';
+
+-- 联集 union 把两个搜寻的结果联接起来
+-- 员工名字union客户名字
+select `name` from `employee` -- 使用 union 的时候各表格提取的属性数量和数据类型必须一致
+union
+select `client_name` from `client`
+union
+select `branch_name` from `branch`;
+
+-- 员工id + 员工名字 union 客户id + 客户名字
+select `emp_id` as `total_id`,`name` as `total_name` from `employee` -- 可以给属性改名称
+union
+select `client_id`,`client_name` from `client`;
+
+-- 员工薪水union销售金额
+select `salary` from `employee`
+union
+select `total_sales` from `work_with`;
+
+-- 连接 join 可以把两个表格连接在一起
+-- 取得所有部门经理的名字
+select `emp_id`,`name`,`branch_name` from `employee`
+left join `branch` -- left 表示无论如何都回传前边的表格，而后边的表格如果不符合条件就不回传，right 表示相反的意思
+on `employee`.`emp_id` = `branch`.`manager_id`; -- 防止出现相同属性名称产生的混乱，可以在属性名称前添加表格名称
+
+-- 子查询 subquery 从一个查询结果中查找特定的结果
+-- 找出研发部门的经理名字
+select `name` from `employee`
+where `emp_id` = (
+	select `manager_id` from `branch`
+    where `branch_name` = '研发'
+);
+
+-- 找出对单一客户销售金额超过50000的员工名字
+select `name` from `employee`
+where `emp_id` in( -- 如果返回的结果不止一个，就要用 in，而不是 =
+	select `emp_id` from `work_with`
+    where `total_sales` > 50000
+);
 
 /*-----------------------------------------------------------------*/
 INT 				-- 整数
