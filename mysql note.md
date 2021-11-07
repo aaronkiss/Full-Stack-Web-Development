@@ -1,3 +1,5 @@
+## MySQL 语法笔记
+
 ```mysql
 CREATE DATABASE `sql_lesson`;
 SHOW DATABASES;
@@ -236,4 +238,79 @@ TIMESTAMP			-- 'YYYY-MM-DD HH:MM:SS' 时间戳
 >=	-- 大于等于
 <=	-- 小于等于
 <>	-- 不等于
+```
+
+## pymysql 笔记
+
+```python
+
+import pymysql
+
+# db = pymysql.connect(host="localhost",
+#                      user="root",
+#                      password="password",
+#                      database="PythonDB")
+
+# cursor = db.cursor()
+
+# # cursor.execute("SELECT VERSION()")
+# # data = cursor.fetchone()
+# # print("Database version: %s " % data)
+
+# # cursor.execute('SHOW TABLES')
+
+# try:
+
+#     sql = 'SELECT * FROM Students'
+#     cursor.execute(sql)
+#     result = cursor.fetchall()
+#     for row in result:
+#         print(row)
+
+# except:
+#     print("无法获得数据！")
+
+# db.close()
+
+
+#自动化执行
+class DB():
+    def __init__(self,
+                 host='localhost',
+                 port=3306,
+                 db='',
+                 user='root',
+                 password='root',
+                 charset='utf8'):
+        #建立连接
+        self.conn = pymysql.connect(host=host,
+                                    port=port,
+                                    db=db,
+                                    user=user,
+                                    password=password,
+                                    charset=charset)
+        #创建游标
+        self.cur = self.conn.cursor(cursor=pymysql.cursors.DictCursor)
+
+    def __enter__(self):
+        #返回游标
+        return self.cur
+
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        #提交数据库并执行
+        self.conn.commit()
+        #关闭游标
+        self.cur.close()
+        #关闭数据库连接
+        self.conn.close()
+
+
+if __name__ == '__main__':
+    with DB(host='localhost', user='root', password='password',
+            db='PythonDB') as db:
+        db.execute('select * from Students')
+        print(db)
+        for i in db:
+            print(i)
+
 ```
